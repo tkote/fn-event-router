@@ -1,0 +1,19 @@
+schema_version: 20180708
+name: fn-event-router-example
+version: 0.0.1
+runtime: java
+build_image: fnproject/fn-java-fdk-build:jdk11-latest
+run_image: fnproject/fn-java-fdk:jre11-latest
+cmd: io.github.tkote.fn.eventrouter.EventRouter::handleRequest
+memory: 256
+timeout: 300
+config:
+  ADB_ID: '?'
+  ADB_WALLET_DIR: /tmp/wallet
+  ADB_WALLET_PW: '?'
+  JDBC_PASSWORD: '?'
+  JDBC_URL: '?'
+  JDBC_USERNAME: '?'
+  LOGGING: io.github.tkote.fn.eventrouter.level=FINE, com.oracle.bmc.level=WARNING
+  OCI_REGION: '?'
+  QUERY_ENABLED: "false"
