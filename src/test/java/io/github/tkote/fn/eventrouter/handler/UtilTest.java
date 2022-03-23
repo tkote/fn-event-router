@@ -2,7 +2,7 @@ package io.github.tkote.fn.eventrouter.handler;
 
 import io.github.tkote.fn.eventrouter.annotation.FnBean;
 import io.github.tkote.fn.eventrouter.annotation.FnInject;
-import io.github.tkote.fn.eventrouter.FnHttpEvent;
+import io.github.tkote.fn.eventrouter.annotation.FnHttpEvent;
 import io.github.tkote.fn.eventrouter.util.Util;
 
 

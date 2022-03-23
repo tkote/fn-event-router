@@ -7,7 +7,15 @@
 
 Fn Java FDK で OCI Functions のリクエストを処理を書くとき、エントリーポイントは1つのメソッドです。
 API Gateway 経由で OCI Functions に複数の HTTP メソッド/パスのリクエストを処理させようとすると、エントリーポイントのメソッドの中で HTTP メソッド/パスに応じた振り分け作業を行って、最終的にまた同じエントリーポイントからリターン値を戻さないといけません。あるいはリターン値ではなくリターンする前にコンテキストを更新するようなパターンもあります。必然的にコーディングが複雑になりやすく、可視性も悪くなり、バグの温床にもなります。
-そうした課題を解決するべく、JAX-RS のごとくアノテーションを使って、すっきりと処理を書けるようにするためのフレームワークがこれです。
+そうした課題を解決するべく、FDK をラップして JAX-RS のようにアノテーションを使ってすっきりと処理を書けるようにするためのフレームワークです。
+
+Client から送信されたリクエストは以下のような経路を辿ってハンドラで処理されます。
+
+```text
+Client -> API GW -> Functions -> (FDK) -> [Fn Event Router] -> [HTTP Method/Path に応じたハンドラ]
+```
+
+ハンドラは受け取ったリクエストを処理してレスポンスを返すことだけに集中できます。
 
 ```java
 @FnBean
@@ -57,7 +65,7 @@ Fn Event Router の dependency を追加します。
 ```xml
     <dependencies>
         <dependency>
-            <groupId>io.github.tkote.fn.eventrouter</groupId>
+            <groupId>io.github.tkote</groupId>
             <artifactId>fn-event-router</artifactId>
             <version>1.0.0</version>
         </dependency>
@@ -89,10 +97,10 @@ Fn Event Router はクラス走査高速化のために jandex を使ったイ�
 生成されたソースにアノテーションを付加します。
 
 ```java
-package io.github.tkote.fn.eventrouter;
+package com.example.fn;
 
-import io.github.tkote.fn.eventrouter.FnBean; // 追加
-import io.github.tkote.fn.eventrouter.FnHttpEvent; // 追加
+import io.github.tkote.fn.eventrouter.annotation.FnBean; // 追加
+import io.github.tkote.fn.eventrouter.annotation.FnHttpEvent; // 追加
 
 @FnBean // 追加
 public class HelloFunction {
@@ -109,14 +117,14 @@ public class HelloFunction {
 ```
 
 GET メソッド且つ ".*/hello" 正規表現とマッチするパスで呼び出された HTTP リクエストは、このメソッドにルーティングされます。
-HTTP レスポンスは text/plain のコンテント・タイプになります。
+返り値が String 且つ @FnHttpEvent アノテーションで `outputType = "text"` としているので、HTTP レスポンスの Content-Type は text/plain になります。
 
 4. HelloFunctionTest.java の編集
 
 Maven でテストできるように、Test クラスも修正します。API Gateway 経由のリクエストをシミュレートします。
 
 ```java
-package io.github.tkote.fn.eventrouter;
+package com.example.fn;
 
 import com.fnproject.fn.testing.*;
 import org.junit.*;
@@ -158,7 +166,7 @@ public class HelloFunctionTest {
 
 5. fun.yaml の編集
 
-エントリーポイントのメソッドを Fn HTTP Handler のものに変更します。
+エントリーポイントを Fn Event Router に変更します。
 
 ```yaml
 schema_version: 20180708
@@ -167,7 +175,7 @@ version: 0.0.1
 runtime: java
 build_image: fnproject/fn-java-fdk-build:jdk11-1.0.146
 run_image: fnproject/fn-java-fdk:jre11-1.0.146
-#cmd: io.github.tkote.fn.eventrouter.HelloFunction::handleRequest
+#cmd: com.example.fn.HelloFunction::handleRequest // ↓に変更
 cmd: io.github.tkote.fn.eventrouter.EventRouter::handleRequest
 ```
 
@@ -183,13 +191,13 @@ $ mvn test
 [INFO] -------------------------------------------------------
 [INFO]  T E S T S
 [INFO] -------------------------------------------------------
-[INFO] Running io.github.tkote.fn.eventrouter.HelloFunctionTest
+[INFO] Running com.example.fn.HelloFunctionTest
 yyyy.mm.dd hh:mm:ss INFO {{hostname}} io.github.tkote.fn.eventrouter.EventRouter: Setup: App=testapp, Function=testfunc
 yyyy.mm.dd hh:mm:ss INFO {{hostname}} io.github.tkote.fn.eventrouter.EventRouter: HTTP Request (START): method=GET, requestURL=/hello
-yyyy.mm.dd hh:mm:ss INFO {{hostname}} io.github.tkote.fn.eventrouter.EventRouter: Matched handler: io.github.tkote.fn.eventrouter.HelloFunction#handleRequest
+yyyy.mm.dd hh:mm:ss INFO {{hostname}} io.github.tkote.fn.eventrouter.EventRouter: Matched handler: com.example.fn.HelloFunction#handleRequest
 Inside Java Hello World function
 yyyy.mm.dd hh:mm:ss INFO {{hostname}} io.github.tkote.fn.eventrouter.EventRouter: HTTP Request (END): method=GET, requestURL=/hello
-[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.967 s - in io.github.tkote.fn.eventrouter.HelloFunctionTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.967 s - in com.example.fn.HelloFunctionTest
 [INFO] 
 [INFO] Results:
 [INFO] 
@@ -201,7 +209,7 @@ yyyy.mm.dd hh:mm:ss INFO {{hostname}} io.github.tkote.fn.eventrouter.EventRouter
 
 OCI Functions にデプロイします (fnapp というアプリケーションが既にあるという前提)。
 
-```
+```text
 $ fn deploy -app fnapp
 ```
 
@@ -246,7 +254,7 @@ OCI のログを見てみると `java.lang.IllegalStateException: No handler was
 
 では、API Gateway 経由で Functions を呼び出してみましょう (ここでは OCI API Gateway の設定手順は省略します)。
 
-```bash
+```text
 $ curl https://xxxxxxx.apigateway.us-ashburn-1.oci.customer-oci.com/sandbox/hello
 Hello, world!
 ```
@@ -265,15 +273,15 @@ Served function invocation request in 10.916 seconds
 
 ## しくみ
 
-以下のアノテーションを使います。
+以下のアノテーション (パッケージ io.github.tkote.fn.eventrouter.annotation) を使います。
 
 
-| アノテーション                             | 設定場所     | 働き |
-|-------------------------------------------|-------------|---------------------------------------------------|
-|io.github.tkote.fn.eventrouter.FnBean      | クラス       | Fn HTTP Handler がマネージするクラスであることを示す |
-|io.github.tkote.fn.eventrouter.FnInit      | メソッド     | 起動後最初のリクエストがハンドラに渡される前に呼び出される |
-|io.github.tkote.fn.eventrouter.FnInject    | メンバー変数 | FnBean のインスタンスがインジェクトされる |
-|io.github.tkote.fn.eventrouter.FnHttpEvent | メソッド     | 個々の HTTP メソッド/パスに応じたハンドラを設定する |
+| アノテーション    | 設定場所     | 働き |
+|------------------|-------------|---------------------------------------------------|
+|FnBean            | クラス       | Fn HTTP Handler がマネージするクラスであることを示す |
+|FnInit            | メソッド     | 起動後最初のリクエストがハンドラに渡される前に呼び出される |
+|FnInject          | メンバー変数 | FnBean のインスタンスがインジェクトされる |
+|FnHttpEvent       | メソッド     | 個々の HTTP メソッド/パスに応じたハンドラを設定する |
 
 少なくとも 1つ以上の @FnHttpEvent でアノテートされたメソッドを持った 1つ以上の @FnBean でアノテートされたクラスが必要です。
 
@@ -327,7 +335,7 @@ FDK の @FnConfiguration メソッドが呼び出されるタイミングでこ�
 | パラメータ | com.fnproject.fn.api.tracing.<br/>TracingContext         | トレーシングに関するコンテキスト                           |
 | 返り値    | void                                                     | レスポンス・ボディ無し                                    |
 | 返り値    | com.fnproject.fn.api.<br/>OutputEvent                     | レスポンスを返す Fn 純正クラス                            |
-| 返り値    | io.github.tkote.fn.eventrouter.<br/>HttpResponse                     | HTTPステータスコードを併せて返す場合                       |
+| 返り値    | io.github.tkote.fn.eventrouter.<br/>HttpResponse          | HTTPステータスコードを併せて返す場合                       |
 | 返り値    | String                                                    | @FnHttpEvent の outputType パラメータ で Content-Type指定 |
 | 返り値    | 任意のクラス                                               | Jsonにマッピング                                         |
 
@@ -338,7 +346,7 @@ FDK の @FnConfiguration メソッドが呼び出されるタイミングでこ�
 
 com.fnproject.fn.api.InputEvent からリクエストの取り出しやレスポンスから com.fnproject.fn.api.OutputEvent の作成を行うヘルパークラスです。 
 
-| メソッド                                                                | 説明                                                             |
+| メソッド                                                               | 説明                                                             |
 |------------------------------------------------------------------------|------------------------------------------------------------------|
 | static OutputEvent createJsonOutputEvent​(Object obj)                   | 任意のオブジェクトから Json型の OutputEvent を作成する               |
 | static OutputEvent createTextOutputEvent​(String s)                     | テキスト型のレスポンスを返す OutputEvent を作成する                  |
@@ -395,7 +403,12 @@ config:
 
 ## その他
 
-[Java Doc](https://tkote.github.io/fn-event-router/apidocs/index.html)
+### Java Doc
 
+<a href="https://tkote.github.io/fn-event-router/apidocs/index.html" target="_blank">Java Doc はこちら</a>
+
+### 利用例
+
+example ディレクトリにあります。
 
 

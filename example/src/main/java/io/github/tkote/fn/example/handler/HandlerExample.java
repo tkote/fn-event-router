@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.github.tkote.fn.eventrouter.annotation.FnBean;
 import io.github.tkote.fn.eventrouter.annotation.FnInit;
-import io.github.tkote.fn.eventrouter.FnHttpEvent;
+import io.github.tkote.fn.eventrouter.annotation.FnHttpEvent;
 import io.github.tkote.fn.eventrouter.HttpEventHelper;
 import com.fnproject.fn.api.InputEvent;
 import com.fnproject.fn.api.RuntimeContext;

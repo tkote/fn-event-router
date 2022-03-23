@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"io.github.tkote.fn.eventrouter"},{"l":"io.github.tkote.fn.eventrouter.annotation"},{"l":"io.github.tkote.fn.eventrouter.logging"}]

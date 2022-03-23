@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.logging.Logger;
 
 import io.github.tkote.fn.eventrouter.annotation.FnBean;
-import io.github.tkote.fn.eventrouter.FnHttpEvent;
+import io.github.tkote.fn.eventrouter.annotation.FnHttpEvent;
 import io.github.tkote.fn.eventrouter.HttpEventHelper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

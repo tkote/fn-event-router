@@ -1,4 +1,4 @@
-package io.github.tkote.fn.eventrouter;
+package io.github.tkote.fn.eventrouter.annotation;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.ElementType;
