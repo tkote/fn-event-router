@@ -405,7 +405,7 @@ config:
 
 ### Java Doc
 
-<a href="https://tkote.github.io/fn-event-router/apidocs/index.html" target="_blank">Java Doc はこちら</a>
+<a href="https://tkote.github.io/fn-event-router/apidocs/" target="_blank">Java Doc はこちら</a>
 
 ### 利用例
 
