@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.logging.Logger;
 import java.util.ArrayList;
 
-import io.github.tkote.fn.eventrouter.annotation.Fn;
 import io.github.tkote.fn.eventrouter.annotation.FnBean;
 import io.github.tkote.fn.eventrouter.annotation.FnInit;
 import io.github.tkote.fn.eventrouter.annotation.FnHttpEvent;
+import io.github.tkote.fn.eventrouter.Fn;
 import io.github.tkote.fn.eventrouter.HttpEventHelper;
 import io.github.tkote.fn.example.util.DatabaseUtil;
 import com.fnproject.fn.api.OutputEvent;

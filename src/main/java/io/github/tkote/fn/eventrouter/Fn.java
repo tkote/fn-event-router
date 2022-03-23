@@ -1,4 +1,4 @@
-package io.github.tkote.fn.eventrouter.annotation;
+package io.github.tkote.fn.eventrouter;
 
 import java.util.Map;
 import java.util.Objects;

@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-import io.github.tkote.fn.eventrouter.annotation.Fn;
 import io.github.tkote.fn.eventrouter.annotation.FnBean;
 import io.github.tkote.fn.eventrouter.annotation.FnHttpEvent;
 import io.github.tkote.fn.eventrouter.annotation.FnInit;
