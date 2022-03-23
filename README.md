@@ -7,7 +7,7 @@
 
 Fn Java FDK で OCI Functions のリクエストを処理を書くとき、エントリーポイントは1つのメソッドです。
 API Gateway 経由で OCI Functions に複数の HTTP メソッド/パスのリクエストを処理させようとすると、エントリーポイントのメソッドの中で HTTP メソッド/パスに応じた振り分け作業を行って、最終的にまた同じエントリーポイントからリターン値を戻さないといけません。あるいはリターン値ではなくリターンする前にコンテキストを更新するようなパターンもあります。必然的にコーディングが複雑になりやすく、可視性も悪くなり、バグの温床にもなります。
-そうした課題を解決するべく、FDK をラップして JAX-RS のようにアノテーションを使ってすっきりと処理を書けるようにするためのフレームワークです。
+そうした課題を解決するべく、FDK を薄くラップして JAX-RS のようにアノテーションを使ってすっきりと処理を書けるようにするためのフレームワークです。
 
 Client から送信されたリクエストは以下のような経路を辿ってハンドラで処理されます。
 
@@ -33,7 +33,7 @@ public class HelloFunction {
 
 ここでは一番簡単な Fn Event Router アプリケーションを FDK のボイラープレートから作成してみます。
 
-1. プロジェクトの作成
+**1. プロジェクトの作成**
 
 Fn CLI を使って Java FDK プロジェクトを作成します。
 
@@ -41,7 +41,7 @@ Fn CLI を使って Java FDK プロジェクトを作成します。
 $ fn init --name sandbox --runtime java
 ```
 
-2. pom.xml の編集
+**2. pom.xml の編集**
 
 現在 Fn Event Router のライブラリはGitHubのリポジトリに置かれているので、これを参照できるようにします。
 pom.xmlの適当なところ（この例では一番最後）にリポジトリの設定を加えます。
@@ -67,7 +67,7 @@ Fn Event Router の dependency を追加します。
         <dependency>
             <groupId>io.github.tkote</groupId>
             <artifactId>fn-event-router</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.1</version>
         </dependency>
         ...
 ```
@@ -92,7 +92,7 @@ Fn Event Router はクラス走査高速化のために jandex を使ったイ�
         </plugins>
 ```
 
-3. HelloFunction.java の編集
+**3. HelloFunction.java の編集**
 
 生成されたソースにアノテーションを付加します。
 
@@ -119,7 +119,7 @@ public class HelloFunction {
 GET メソッド且つ ".*/hello" 正規表現とマッチするパスで呼び出された HTTP リクエストは、このメソッドにルーティングされます。
 返り値が String 且つ @FnHttpEvent アノテーションで `outputType = "text"` としているので、HTTP レスポンスの Content-Type は text/plain になります。
 
-4. HelloFunctionTest.java の編集
+**4. HelloFunctionTest.java の編集**
 
 Maven でテストできるように、Test クラスも修正します。API Gateway 経由のリクエストをシミュレートします。
 
@@ -164,7 +164,7 @@ public class HelloFunctionTest {
 ```
 
 
-5. fun.yaml の編集
+**5. fun.yaml の編集**
 
 エントリーポイントを Fn Event Router に変更します。
 
@@ -179,7 +179,7 @@ run_image: fnproject/fn-java-fdk:jre11-1.0.146
 cmd: io.github.tkote.fn.eventrouter.EventRouter::handleRequest
 ```
 
-6. テスト
+**6. テスト**
 
 以下のような出力になっていれば OK です。
 
@@ -205,7 +205,7 @@ yyyy.mm.dd hh:mm:ss INFO {{hostname}} io.github.tkote.fn.eventrouter.EventRouter
 ...
 ```
 
-7. デプロイ
+**7. デプロイ**
 
 OCI Functions にデプロイします (fnapp というアプリケーションが既にあるという前提)。
 
@@ -376,7 +376,7 @@ logging.properties は以下のような内容になっています。
 handlers=java.util.logging.ConsoleHandler
 .level=INFO
 
-java.util.logging.ConsoleHandler.level=FINE
+java.util.logging.ConsoleHandler.level=ALL
 java.util.logging.ConsoleHandler.formatter=io.github.tkote.fn.eventrouter.logging.SimpleFormatter
 
 java.util.logging.SimpleFormatter.format=%1$tY.%1$tm.%1$td %1$tH:%1$tM:%1$tS %4$s !host! %3$s: %5$s%6$s%n
@@ -405,7 +405,7 @@ config:
 
 ### Java Doc
 
-<a href="https://tkote.github.io/fn-event-router/apidocs/" target="_blank">Java Doc はこちら</a>
+[Java Doc はこちら](https://tkote.github.io/fn-event-router/apidocs/)
 
 ### 利用例
 
