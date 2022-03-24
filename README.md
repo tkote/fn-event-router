@@ -164,7 +164,7 @@ public class HelloFunctionTest {
 ```
 
 
-**5. fun.yaml の編集**
+**5. func.yaml の編集**
 
 エントリーポイントを Fn Event Router に変更します。
 
@@ -348,10 +348,10 @@ com.fnproject.fn.api.InputEvent からリクエストの取り出しやレスポ
 
 | メソッド                                                               | 説明                                                             |
 |------------------------------------------------------------------------|------------------------------------------------------------------|
-| static OutputEvent createJsonOutputEvent​(Object obj)                   | 任意のオブジェクトから Json型の OutputEvent を作成する               |
-| static OutputEvent createTextOutputEvent​(String s)                     | テキスト型のレスポンスを返す OutputEvent を作成する                  |
-| static &lt;T&gt; T getInputBody​(InputEvent inputEvent, Class<T> clazz) | InputEvent からリクエストを指定したクラスのオブジェクトとして取り出す |
-| static String getInputBodyAsString​(InputEvent inputEvent)              | InputEvent からリクエストを文字列として取り出す                      |
+| static OutputEvent createJsonOutputEvent(Object obj)                   | 任意のオブジェクトから Json型の OutputEvent を作成する               |
+| static OutputEvent createTextOutputEvent(String s)                     | テキスト型のレスポンスを返す OutputEvent を作成する                  |
+| static &lt;T&gt; T getInputBody(InputEvent inputEvent, Class<T> clazz) | InputEvent からリクエストを指定したクラスのオブジェクトとして取り出す |
+| static String getInputBodyAsString(InputEvent inputEvent)              | InputEvent からリクエストを文字列として取り出す                      |
 
 getInputBody のクラス指定は、任意のJsonマッピングするクラスもしくは com.fasterxml.jackson.databind.JsonNode を指定します。
 
@@ -361,10 +361,10 @@ HTTP ステータス・コードをボディとセットにしてレスポンス
 
 | メソッド                                                   | 説明                                                             |
 |-----------------------------------------------------------|------------------------------------------------------------------|
-| static HttpResponse jsonResponse​(Object obj)              | 任意のオブジェクトから Json型のレスポンスを作成する, HTTP Status=200 |
-| static HttpResponse jsonResponse​(Object obj, int status)	 | 任意のオブジェクトから Json型のレスポンスを作成する                  |
-| static HttpResponse textResponse​(String str)	             | テキスト型のレスポンスを作成する, HTTP Status=200                   |
-| static HttpResponse textResponse​(String str, int status)  | テキスト型のレスポンスを作成する                                    |
+| static HttpResponse jsonResponse(Object obj)              | 任意のオブジェクトから Json型のレスポンスを作成する, HTTP Status=200 |
+| static HttpResponse jsonResponse(Object obj, int status)	 | 任意のオブジェクトから Json型のレスポンスを作成する                  |
+| static HttpResponse textResponse(String str)	             | テキスト型のレスポンスを作成する, HTTP Status=200                   |
+| static HttpResponse textResponse(String str, int status)  | テキスト型のレスポンスを作成する                                    |
 
 ### ロギング
 
