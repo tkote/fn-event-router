@@ -250,7 +250,7 @@ $ fn invoke fnapp sandbox --output json
 ```
 
 `Fn-Http-Status` が 500 なので HTTP 呼び出しとしてはエラーです。出力もありません。
-OCI のログを見てみると `java.lang.IllegalStateException: No handler was found - method=, path=` と出力されています。Fnction を直接呼び出したので、HTTPリクエストに必要な情報が付加されておらず、適切なハンドラが見つからなかったことがわかります。
+OCI のログを見てみると `java.lang.IllegalStateException: No handler was found - method=, path=` と出力されています。Function を直接呼び出したので、HTTPリクエストに必要な情報が付加されておらず、適切なハンドラが見つからなかったことがわかります。
 
 では、API Gateway 経由で Functions を呼び出してみましょう (ここでは OCI API Gateway の設定手順は省略します)。
 
@@ -407,7 +407,7 @@ config:
 
 [Java Doc はこちら](https://tkote.github.io/fn-event-router/apidocs/)
 
-### 利用例
+### 使用例
 
 example ディレクトリにあります。
 
