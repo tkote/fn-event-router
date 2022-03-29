@@ -278,7 +278,7 @@ Served function invocation request in 10.916 seconds
 
 | アノテーション    | 設定場所     | 働き |
 |------------------|-------------|---------------------------------------------------|
-|FnBean            | クラス       | Fn HTTP Handler がマネージするクラスであることを示す |
+|FnBean            | クラス       | Fn Event Router がマネージするクラスであることを示す |
 |FnInit            | メソッド     | 起動後最初のリクエストがハンドラに渡される前に呼び出される |
 |FnInject          | メンバー変数 | FnBean のインスタンスがインジェクトされる |
 |FnHttpEvent       | メソッド     | 個々の HTTP メソッド/パスに応じたハンドラを設定する |
@@ -288,8 +288,8 @@ Served function invocation request in 10.916 seconds
 
 ### @FnBean 
 
-Fn HTTP Handler がライフサイクルを管理するクラス (FnBeanと呼ぶ) であることを示します。ユーザが new する必要はありません。
-FnBean は Fn HTTP Handler の起動時にそのインスタンスが生成され、シングルトンとして管理されます。
+Fn Event Router がライフサイクルを管理するクラス (FnBeanと呼ぶ) であることを示します。ユーザが new する必要はありません。
+FnBean は Fn Event Router の起動時にそのインスタンスが生成され、シングルトンとして管理されます。
 
 ### @FnInit
 
